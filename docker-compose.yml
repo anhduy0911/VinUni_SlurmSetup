@@ -1,0 +1,288 @@
+version: '3'
+
+services:
+  slurmjupyter:
+    image: slurm-jupyter:latest
+    hostname: slurmjupyter
+    user: admin
+    # stdin_open: true
+    # tty: true
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    ports:
+    - 8888:8888
+    - "45678:22"
+    restart: always
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['7']
+            capabilities: ['gpu']
+    command: >
+      bash -c "sudo sed -i 's/#\?PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+              && mkdir -p /home/admin/.ssh
+              && touch /home/admin/.ssh/authorized_keys
+              && authorized_keys_vinuni /home/admin/.ssh/authorized_keys
+              && sudo chown admin:admin /home/admin/.ssh/authorized_keys
+              && sudo service ssh start"
+  slurmmaster:
+    image: slurm-master:latest
+    hostname: slurmmaster
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    ports:
+    - 6817:6817
+    - 6818:6818
+    - 6819:6819
+    restart: always
+  #first node
+  slurmnode1:
+    image: slurm-node:latest
+    hostname: slurmnode1
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode1
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0']
+            capabilities: ['gpu']
+  #second node
+  slurmnode2:
+    image: slurm-node:latest
+    hostname: slurmnode2
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode2
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['1']
+            capabilities: ['gpu']
+  #third node
+  slurmnode3:
+    image: slurm-node:latest
+    hostname: slurmnode3
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode3
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['2']
+            capabilities: ['gpu']
+  #forth node
+  slurmnode4:
+    image: slurm-node:latest
+    hostname: slurmnode4
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode4
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['3']
+            capabilities: ['gpu']
+  #fifth node
+  slurmnode5:
+    image: slurm-node:latest
+    hostname: slurmnode5
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode5
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['4']
+            capabilities: ['gpu']
+  #sixth node
+  slurmnode6:
+    image: slurm-node:latest
+    hostname: slurmnode6
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode6
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['5']
+            capabilities: ['gpu']
+  #seventh node
+  slurmnode7:
+    image: slurm-node:latest
+    hostname: slurmnode7
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode7
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['6']
+            capabilities: ['gpu']
+  slurmnode8:
+    image: slurm-node:latest
+    hostname: slurmnode8
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode8
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0,1']
+            capabilities: ['gpu']
+  slurmnode9:
+    image: slurm-node:latest
+    hostname: slurmnode9
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode9
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['2,3']
+            capabilities: ['gpu']
+  slurmnode10:
+    image: slurm-node:latest
+    hostname: slurmnode10
+    user: admin
+    shm_size: '64gb'
+    volumes:
+    - shared-vol:/home/admin
+    - /mnt/disk1/user:/vinserver_user
+    - /mnt/sdb/shared:/shared
+    restart: always
+    environment:
+    - SLURM_NODENAME=slurmnode10
+    links:
+    - slurmmaster
+    deploy:
+      resources:
+        # limits:
+        #   cpus: "32"
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['4,5']
+            capabilities: ['gpu']
+volumes:
+  shared-vol:
+    external: true

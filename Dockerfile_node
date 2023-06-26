@@ -1,0 +1,22 @@
+FROM rancavil/slurm-node:19.05.5-1
+
+# enable reboot command
+RUN echo '#!/bin/bash\nkill -15 1' | sudo tee /usr/bin/reboot
+RUN sudo chmod +x /usr/bin/reboot                # reboot
+RUN sudo ln -sf /usr/bin/reboot /usr/sbin/reboot # sudo reboot
+
+# install miniconda
+ENV PATH="/root/miniconda3/bin:$PATH"
+RUN cd /home/admin && wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh -b && rm -f Miniconda3-latest-Linux-x86_64.sh && conda init && conda config --set auto_activate_base false && conda update -n base -c defaults conda -y
+COPY slurm.conf /etc/slurm-llnl/slurm.conf
+COPY gres.conf /etc/slurm-llnl/gres.conf
+RUN conda init
+# RUN cd /home/admin
+# RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# RUN bash Miniconda3-latest-Linux-x86_64.sh -b
+# RUN rm -f Miniconda3-latest-Linux-x86_64.sh
+# RUN conda -h
+# RUN conda init
+# RUN conda config --set auto_activate_base false
+# RUN conda update -n base -c defaults conda -y
+ 

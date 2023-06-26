@@ -1,0 +1,10 @@
+docker restart cluster_slurmnode1_1
+docker restart cluster_slurmnode2_1
+docker restart cluster_slurmnode3_1
+docker restart cluster_slurmnode4_1
+docker restart cluster_slurmnode5_1
+docker restart cluster_slurmnode6_1
+docker restart cluster_slurmnode7_1
+docker restart cluster_slurmnode8_1
+docker restart cluster_slurmnode9_1
+docker restart cluster_slurmnode10_1

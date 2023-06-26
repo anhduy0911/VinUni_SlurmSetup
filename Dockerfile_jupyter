@@ -1,0 +1,30 @@
+FROM rancavil/slurm-jupyter:19.05.5-1
+
+# setup a user as sudo
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y openssh-server
+RUN sudo sed -i 's/#\?PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+# RUN apt-get install -y openssh-server 
+RUN apt-get install -y vim tmux
+
+# enable reboot command
+RUN echo '#!/bin/bash\nkill -15 1' | sudo tee /usr/bin/reboot
+RUN sudo chmod +x /usr/bin/reboot                # reboot
+RUN sudo ln -sf /usr/bin/reboot /usr/sbin/reboot # sudo reboot
+
+# display a message
+COPY 00-header /etc/update-motd.d
+COPY slurm.conf /etc/slurm-llnl/slurm.conf
+COPY gres.conf /etc/slurm-llnl/gres.conf
+COPY file_init_jupyter.sh /etc/slurm-llnl/docker-entrypoint.sh
+RUN sudo chmod +x /etc/slurm-llnl/docker-entrypoint.sh
+
+# service ssh start
+# RUN sudo sed -i 's/#\?PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+# RUN mkdir -p /home/admin/.ssh
+# RUN touch /home/admin/.ssh/authorized_keys
+# COPY authorized_keys_vinuni /home/admin/.ssh/authorized_keys
+# RUN sudo chown admin:admin /home/admin/.ssh/authorized_keys
+# RUN sudo service ssh start
+
+
