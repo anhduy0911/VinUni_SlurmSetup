@@ -8,3 +8,4 @@ docker restart cluster_slurmnode7_1
 docker restart cluster_slurmnode8_1
 docker restart cluster_slurmnode9_1
 docker restart cluster_slurmnode10_1
+docker restart cluster_slurmjupyter_1
